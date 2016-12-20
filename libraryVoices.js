@@ -24,8 +24,8 @@ ca.alanharnum.libraryVoices.start = function (endpoint, that) {
     that.socket.on('open', function open() {
         console.log("Connection opened");
     });
-    ca.alanharnum.libraryVoices.logMode(that.socket);
-    ca.alanharnum.libraryVoices.speakMode(that.socket);
+    ca.alanharnum.libraryVoices.logHandler(that.socket);
+    ca.alanharnum.libraryVoices.speakHandler(that.socket);
 };
 
 ca.alanharnum.libraryVoices.logToFile = function (message) {
@@ -35,7 +35,7 @@ ca.alanharnum.libraryVoices.logToFile = function (message) {
     });
 };
 
-ca.alanharnum.libraryVoices.speakMode = function (socket) {
+ca.alanharnum.libraryVoices.speakHandler = function (socket) {
     socket.on('message', function(data, flags) {
         console.log("Message received, speaking message");
         console.log(data);
@@ -44,7 +44,7 @@ ca.alanharnum.libraryVoices.speakMode = function (socket) {
     });
 };
 
-ca.alanharnum.libraryVoices.logMode = function (socket) {
+ca.alanharnum.libraryVoices.logHandler = function (socket) {
     socket.on('message', function(data, flags) {
         console.log("Message received, logging message to file");
         console.log(data);
