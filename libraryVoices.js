@@ -22,8 +22,6 @@ ca.alanharnum.libraryVoices.start = function (endpoint) {
     ca.alanharnum.libraryVoices.logMode(endpoint);
 }
 
-const tplEndpoint = "ws://45.55.209.67:4571/rtsearches";
-
 ca.alanharnum.libraryVoices.logToFile = function (message) {
     fs.appendFile("log.txt", message + "\n", 'utf8', (err) => {
         if (err) throw err;
