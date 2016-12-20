@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 const Say = require('say');
 const WS = require('ws');
 const fs = require('fs');
@@ -5,7 +7,7 @@ const fluid = require('infusion');
 var ca = fluid.registerNamespace("ca");
 
 fluid.defaults("ca.alanharnum.libraryVoices", {
-    gradeNames: "fluid.modelComponent",
+    gradeNames: "fluid.component",
     wsOptions: {
         endpoint: "ws://45.55.209.67:4571/rtsearches"
     },
@@ -20,7 +22,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
 ca.alanharnum.libraryVoices.start = function (endpoint) {
     // ca.alanharnum.libraryVoices.speakMode();
     ca.alanharnum.libraryVoices.logMode(endpoint);
-}
+};
 
 ca.alanharnum.libraryVoices.logToFile = function (message) {
     fs.appendFile("log.txt", message + "\n", 'utf8', (err) => {
@@ -58,6 +60,5 @@ ca.alanharnum.libraryVoices.logMode = function (endpoint) {
         ca.alanharnum.libraryVoices.logToFile(terms);
     });
 };
-
 
 ca.alanharnum.libraryVoices();
