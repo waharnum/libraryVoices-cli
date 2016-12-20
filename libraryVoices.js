@@ -1,9 +1,10 @@
 /* jshint esversion: 6 */
 
-const Say = require('say');
-const WS = require('ws');
+const say = require('say');
+const ws = require('ws');
 const fs = require('fs');
 const fluid = require('infusion');
+
 var ca = fluid.registerNamespace("ca");
 
 fluid.defaults("ca.alanharnum.libraryVoices", {
@@ -20,7 +21,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
 });
 
 ca.alanharnum.libraryVoices.start = function (endpoint, that) {
-    that.socket = new WS(endpoint);
+    that.socket = new ws(endpoint);
     that.socket.on('open', function open() {
         console.log("Connection opened");
     });
@@ -40,7 +41,7 @@ ca.alanharnum.libraryVoices.speakHandler = function (socket) {
         console.log("Message received, speaking message");
         console.log(data);
         var terms = JSON.parse(data)[0].terms;
-        Say.speak(terms);
+        say.speak(terms);
     });
 };
 
