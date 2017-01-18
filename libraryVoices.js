@@ -13,7 +13,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
         endpoint: "ws://45.55.209.67:4571/rtsearches",
         speak: true,
         log: false,
-        maxConnectionErrors: 10
+        maxConnectionErrors: 30
     },
     events: {
         "onSocketOpened": null
@@ -38,6 +38,7 @@ ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
 
     socket.on('open', function open() {
         console.log("Connection opened");
+        say.speak("Connection opened");
         that.socket = socket;
         that.events.onSocketOpened.fire();
     });
