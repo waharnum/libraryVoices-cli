@@ -1,0 +1,10 @@
+[Unit]
+Description=Start libraryVoices
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=node /home/chip/code/libraryVoices-cli/libraryVoices.js
