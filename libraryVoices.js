@@ -12,21 +12,53 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
     config: {
         endpoint: "ws://45.55.209.67:4571/rtsearches",
         speak: true,
-        log: false
+        log: false,
+        maxConnectionErrors: 10
+    },
+    events: {
+        "onSocketOpened": null
     },
     listeners: {
-        "onCreate.start": {
-            funcName: "ca.alanharnum.libraryVoices.start",
-            args: ["{that}.options.config.endpoint", "{that}.options.config.speak", "{that}.options.config.log", "{that}"]
+        "onCreate.openSocket": {
+            funcName: "ca.alanharnum.libraryVoices.openSocket",
+            args: ["{that}.options.config.endpoint", "{that}"]
+        },
+        "onSocketOpened.addOnMessageHandlers": {
+            funcName: "ca.alanharnum.libraryVoices.addOnMessageHandlers",
+            args: ["{that}.options.config.speak", "{that}.options.config.log", "{that}"]
         }
+    },
+    members: {
+        connectionErrors: 0
     }
 });
 
-ca.alanharnum.libraryVoices.start = function (endpoint, speak, log, that) {
-    that.socket = new ws(endpoint);
-    that.socket.on('open', function open() {
+ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
+    var socket = new ws(endpoint);
+
+    socket.on('open', function open() {
         console.log("Connection opened");
+        that.socket = socket;
+        that.events.onSocketOpened.fire();
     });
+
+    socket.on('error', function errorHandle(e) {
+        that.connectionErrors = that.connectionErrors+1;
+        console.log("Error occured: " + e);
+        console.log(that.connectionErrors + " errors so far, max is " + that.options.config.maxConnectionErrors);
+        if(that.connectionErrors < that.options.config.maxConnectionErrors) {
+            console.log("Trying again in 10 seconds");
+            setTimeout(function() {
+                ca.alanharnum.libraryVoices.openSocket(endpoint, that);
+            }, 10000);
+        } else {
+            console.log("Terminating program, maximum connection errors occured in trying to establish socket");
+            process.exit();
+        }
+    });
+};
+
+ca.alanharnum.libraryVoices.addOnMessageHandlers = function (speak, log, that) {
     if (log) {
         ca.alanharnum.libraryVoices.logHandler(that.socket);
     }
