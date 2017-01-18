@@ -10,23 +10,29 @@ var ca = fluid.registerNamespace("ca");
 fluid.defaults("ca.alanharnum.libraryVoices", {
     gradeNames: "fluid.component",
     config: {
-        endpoint: "ws://45.55.209.67:4571/rtsearches"
+        endpoint: "ws://45.55.209.67:4571/rtsearches",
+        speak: true,
+        log: false
     },
     listeners: {
         "onCreate.start": {
             funcName: "ca.alanharnum.libraryVoices.start",
-            args: ["{that}.options.config.endpoint", "{that}"]
+            args: ["{that}.options.config.endpoint", "{that}.options.config.speak", "{that}.options.config.log", "{that}"]
         }
     }
 });
 
-ca.alanharnum.libraryVoices.start = function (endpoint, that) {
+ca.alanharnum.libraryVoices.start = function (endpoint, speak, log, that) {
     that.socket = new ws(endpoint);
     that.socket.on('open', function open() {
         console.log("Connection opened");
     });
-    ca.alanharnum.libraryVoices.logHandler(that.socket);
-    ca.alanharnum.libraryVoices.speakHandler(that.socket);
+    if (log) {
+        ca.alanharnum.libraryVoices.logHandler(that.socket);
+    }
+    if (speak) {
+        ca.alanharnum.libraryVoices.speakHandler(that.socket);
+    }
 };
 
 ca.alanharnum.libraryVoices.logToFile = function (message) {
