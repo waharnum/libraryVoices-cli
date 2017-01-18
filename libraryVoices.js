@@ -37,8 +37,8 @@ ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
     var socket = new ws(endpoint);
 
     socket.on('open', function open() {
-        console.log("Connection opened");
-        say.speak("Connection opened");
+        console.log("Connection opened, the library voices will begin...");
+        say.speak("Connection opened, the library voices will begin...");
         that.socket = socket;
         that.events.onSocketOpened.fire();
     });
