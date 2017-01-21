@@ -13,6 +13,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
         endpoint: "ws://45.55.209.67:4571/rtsearches",
         speak: true,
         log: false,
+        consoleDisplay: true,
         logLocation: "log.txt",
         maxConnectionErrors: 30
     },
@@ -26,7 +27,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
         },
         "onSocketOpened.addOnMessageHandlers": {
             funcName: "ca.alanharnum.libraryVoices.addOnMessageHandlers",
-            args: ["{that}.options.config.speak", "{that}.options.config.log", "{that}"]
+            args: ["{that}.options.config.speak", "{that}.options.config.log", "{that}.options.config.consoleDisplay", "{that}"]
         }
     },
     members: {
@@ -60,12 +61,15 @@ ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
     });
 };
 
-ca.alanharnum.libraryVoices.addOnMessageHandlers = function (speak, log, that) {
+ca.alanharnum.libraryVoices.addOnMessageHandlers = function (speak, log, consoleDisplay, that) {
     if (log) {
         ca.alanharnum.libraryVoices.logHandler(that.socket, that.options.config.logLocation);
     }
     if (speak) {
         ca.alanharnum.libraryVoices.speakHandler(that.socket);
+    }
+    if (consoleDisplay) {
+        ca.alanharnum.libraryVoices.consoleDisplayHandler(that.socket);
     }
 };
 
@@ -78,8 +82,7 @@ ca.alanharnum.libraryVoices.logToFile = function (message, logLocation) {
 
 ca.alanharnum.libraryVoices.speakHandler = function (socket) {
     socket.on('message', function(data, flags) {
-        console.log("Message received, speaking message");
-        console.log(data);
+        console.log("Speaking message");
         var terms = JSON.parse(data)[0].terms;
         say.speak(terms);
     });
@@ -87,16 +90,21 @@ ca.alanharnum.libraryVoices.speakHandler = function (socket) {
 
 ca.alanharnum.libraryVoices.logHandler = function (socket, logLocation) {
     socket.on('message', function(data, flags) {
-        console.log("Message received, logging message to file");
-        console.log(data);
+        console.log("Logging message to file");
         var terms = JSON.parse(data)[0].terms;
         ca.alanharnum.libraryVoices.logToFile(terms, logLocation);
     });
 };
 
+ca.alanharnum.libraryVoices.consoleDisplayHandler = function (socket) {
+    socket.on('message', function(data, flags) {
+        console.log("Message received");
+        console.log(data);
+    });
+};
+
 ca.alanharnum.libraryVoices({
     config: {
-        speak: false,
-        log: true
+        speak: false
     },
 });
