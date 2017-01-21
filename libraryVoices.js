@@ -15,6 +15,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
         log: false,
         consoleDisplay: true,
         logLocation: "log.txt",
+        autoLogName: true,
         maxConnectionErrors: 30
     },
     events: {
@@ -63,7 +64,7 @@ ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
 
 ca.alanharnum.libraryVoices.addOnMessageHandlers = function (speak, log, consoleDisplay, that) {
     if (log) {
-        ca.alanharnum.libraryVoices.logHandler(that.socket, that.options.config.logLocation);
+        ca.alanharnum.libraryVoices.logHandler(that.socket, that.options.config.logLocation, that.options.config.autoLogName);
     }
     if (speak) {
         ca.alanharnum.libraryVoices.speakHandler(that.socket);
@@ -80,6 +81,14 @@ ca.alanharnum.libraryVoices.logToFile = function (message, logLocation) {
     });
 };
 
+ca.alanharnum.libraryVoices.getAutoLogName = function () {
+    var today = new Date();
+    var autoLogName = "log-" + today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + (today.getDate() + ".txt");
+    console.log(autoLogName);
+    return autoLogName;
+
+};
+
 ca.alanharnum.libraryVoices.speakHandler = function (socket) {
     socket.on('message', function(data, flags) {
         console.log("Speaking message");
@@ -88,7 +97,8 @@ ca.alanharnum.libraryVoices.speakHandler = function (socket) {
     });
 };
 
-ca.alanharnum.libraryVoices.logHandler = function (socket, logLocation) {
+ca.alanharnum.libraryVoices.logHandler = function (socket, logLocation, autoLogName) {
+    logLocation = autoLogName ? ca.alanharnum.libraryVoices.getAutoLogName() : logLocation;
     socket.on('message', function(data, flags) {
         console.log("Logging message to file");
         var terms = JSON.parse(data)[0].terms;
