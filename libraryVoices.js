@@ -92,19 +92,24 @@ ca.alanharnum.libraryVoices.logHandler = function (socket, logLocation) {
     socket.on('message', function(data, flags) {
         console.log("Logging message to file");
         var terms = JSON.parse(data)[0].terms;
-        ca.alanharnum.libraryVoices.logToFile(terms, logLocation);
+        var now = new Date();
+        var timePrefix = now.toISOString() + " >>> ";
+        ca.alanharnum.libraryVoices.logToFile(timePrefix + terms, logLocation);
     });
 };
 
 ca.alanharnum.libraryVoices.consoleDisplayHandler = function (socket) {
     socket.on('message', function(data, flags) {
-        console.log("Message received");
+        var now = new Date();
+        console.log("Message received " + now.toISOString());
         console.log(data);
     });
 };
 
 ca.alanharnum.libraryVoices({
     config: {
-        speak: false
+        speak: false,
+        log: true,
+        logLocation: "log-2017-01-21.txt",
     },
 });
