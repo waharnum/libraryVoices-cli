@@ -83,7 +83,8 @@ ca.alanharnum.libraryVoices.logToFile = function (message, logLocation) {
 
 ca.alanharnum.libraryVoices.getAutoLogName = function () {
     var today = new Date();
-    var autoLogName = "log-" + today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + (today.getDate() + ".txt");
+    var isoString = today.toISOString();
+    var autoLogName = "log-" + isoString.split("T")[0] + ".txt";
     console.log(autoLogName);
     return autoLogName;
 
