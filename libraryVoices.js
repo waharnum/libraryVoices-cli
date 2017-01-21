@@ -13,6 +13,7 @@ fluid.defaults("ca.alanharnum.libraryVoices", {
         endpoint: "ws://45.55.209.67:4571/rtsearches",
         speak: true,
         log: false,
+        logLocation: "log.txt",
         maxConnectionErrors: 30
     },
     events: {
@@ -61,15 +62,15 @@ ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
 
 ca.alanharnum.libraryVoices.addOnMessageHandlers = function (speak, log, that) {
     if (log) {
-        ca.alanharnum.libraryVoices.logHandler(that.socket);
+        ca.alanharnum.libraryVoices.logHandler(that.socket, that.options.config.logLocation);
     }
     if (speak) {
         ca.alanharnum.libraryVoices.speakHandler(that.socket);
     }
 };
 
-ca.alanharnum.libraryVoices.logToFile = function (message) {
-    fs.appendFile("log.txt", message + "\n", 'utf8', (err) => {
+ca.alanharnum.libraryVoices.logToFile = function (message, logLocation) {
+    fs.appendFile(logLocation, message + "\n", 'utf8', (err) => {
         if (err) throw err;
         console.log("Data appended to file.");
     });
@@ -84,13 +85,18 @@ ca.alanharnum.libraryVoices.speakHandler = function (socket) {
     });
 };
 
-ca.alanharnum.libraryVoices.logHandler = function (socket) {
+ca.alanharnum.libraryVoices.logHandler = function (socket, logLocation) {
     socket.on('message', function(data, flags) {
         console.log("Message received, logging message to file");
         console.log(data);
         var terms = JSON.parse(data)[0].terms;
-        ca.alanharnum.libraryVoices.logToFile(terms);
+        ca.alanharnum.libraryVoices.logToFile(terms, logLocation);
     });
 };
 
-ca.alanharnum.libraryVoices();
+ca.alanharnum.libraryVoices({
+    config: {
+        speak: false,
+        log: true
+    },
+});
