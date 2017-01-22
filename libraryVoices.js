@@ -60,6 +60,12 @@ ca.alanharnum.libraryVoices.openSocket = function (endpoint, that) {
             process.exit();
         }
     });
+
+    socket.on('close', function close() {
+        var today = new Date();
+        var isoString = today.toISOString();
+        console.log("Socket closed at " + isoString);
+    });
 };
 
 ca.alanharnum.libraryVoices.addOnMessageHandlers = function (speak, log, consoleDisplay, that) {
@@ -99,8 +105,8 @@ ca.alanharnum.libraryVoices.speakHandler = function (socket) {
 };
 
 ca.alanharnum.libraryVoices.logHandler = function (socket, logLocation, autoLogName) {
-    logLocation = autoLogName ? ca.alanharnum.libraryVoices.getAutoLogName() : logLocation;
     socket.on('message', function(data, flags) {
+        logLocation = autoLogName ? ca.alanharnum.libraryVoices.getAutoLogName() : logLocation;
         console.log("Logging message to file");
         var terms = JSON.parse(data)[0].terms;
         var now = new Date();
@@ -120,7 +126,6 @@ ca.alanharnum.libraryVoices.consoleDisplayHandler = function (socket) {
 ca.alanharnum.libraryVoices({
     config: {
         speak: false,
-        log: true,
-        logLocation: "log-2017-01-21.txt",
+        log: true
     },
 });
